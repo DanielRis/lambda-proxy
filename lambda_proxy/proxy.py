@@ -136,8 +136,11 @@ def _get_request_path(event: Dict) -> Optional[str]:
     """Return API call path."""
     resource_proxy = proxy_pattern.search(event.get("resource", "/"))
     if resource_proxy:
-        proxy_path = event["pathParameters"].get(resource_proxy["name"])
-        return f"/{proxy_path}"
+        if event["pathParameters"] is None:
+            return "/"
+        else:
+            proxy_path = event["pathParameters"].get(resource_proxy["name"])
+            return f"/{proxy_path}"
 
     return event.get("path")
 
